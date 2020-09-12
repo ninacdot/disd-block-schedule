@@ -50,6 +50,7 @@ function getAorB(day) {
 function render(textObj) {
   console.log(textObj)
   var block = $('#block-day')
+  $('#current-date .date', block).html(textObj.today)
   if (textObj.hasOwnProperty('letter')) {
     $('#letter h1', block).html(textObj.letter)
     $(document.body).addClass(textObj.letter)
@@ -71,6 +72,7 @@ var today = moment()
 var day = Math.abs(today.format('d'))
 var holidays = getHolidays()
 var renderText = {
+  today: today.format('dddd, MMMM Do YYYY'),
   letter: getAorB(day),
   cohort: '',
   text: '',
