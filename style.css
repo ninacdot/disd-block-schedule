@@ -1,0 +1,19 @@
+body.B {
+  background: black;
+  color: white;
+}
+
+#main {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#letter h1 {
+  font-size: 20rem;
+}
+
+#cohort h3 {
+  font-size: 5rem;
+}

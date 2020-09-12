@@ -2,75 +2,39 @@
 <html>
   <head>
     <title>What Day Is It? | Unofficial Denton ISD</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-      var $ = jQuery
-      // Changes XML to JSON
-      function xmlToJson(xml) {
-        // Create the return object
-        var obj = {}
-
-        if (xml.nodeType == 1) {
-          // element
-          // do attributes
-          if (xml.attributes.length > 0) {
-            obj['@attributes'] = {}
-            for (var j = 0; j < xml.attributes.length; j++) {
-              var attribute = xml.attributes.item(j)
-              obj['@attributes'][attribute.nodeName] = attribute.nodeValue
-            }
-          }
-        } else if (xml.nodeType == 3) {
-          // text
-          obj = xml.nodeValue
-        }
-
-        // do children
-        if (xml.hasChildNodes()) {
-          for (var i = 0; i < xml.childNodes.length; i++) {
-            var item = xml.childNodes.item(i)
-            var nodeName = item.nodeName
-            if (typeof obj[nodeName] == 'undefined') {
-              obj[nodeName] = xmlToJson(item)
-            } else {
-              if (typeof obj[nodeName].push == 'undefined') {
-                var old = obj[nodeName]
-                obj[nodeName] = []
-                obj[nodeName].push(old)
-              }
-              obj[nodeName].push(xmlToJson(item))
-            }
-          }
-        }
-        return obj
-      }
-
-      // Get date
-      var date = new Date()
-      var day = date.getUTCDay()
-      var days = {
-        0: 'Sunday',
-        1: 'Monday',
-        2: 'Tuesday',
-        3: 'Wednesday',
-        4: 'Thursday',
-        5: 'Friday',
-        6: 'Saturday',
-      }
-
-      var disdCalendarFeed = 'https://www.dentonisd.org/site/RSS.aspx?DomainID=1&ModuleInstanceID=12926&PageID=1'
-      var disdCalendar = 'https://www.dentonisd.org/Page/2'
-
-      var disdXml = $.ajax(disdCalendarFeed)
-      console.log(disdXml)
-      var xmlStr = '<a id="a"><b id="b">hey!</b></a>'
-      var parser = new DOMParser()
-      var dom = parser.parseFromString(xmlStr, 'application/xml')
-
-      console.log(days[day])
-    </script>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
-    <div id="block-day"></div>
+    <div id="main" class="container text-center">
+      <div id="block-day" class="">
+        <div id="letter">
+          <h1></h1>
+        </div>
+        <div id="cohort">
+          <div id="cohort-1">
+            <h3></h3>
+          </div>
+          <div id="cohort-2">
+            <h3></h3>
+          </div>
+        </div>
+        <div id="text">
+          <p class="display-3"></p>
+        </div>
+      </div>
+    </div>
   </body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"
+    integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZMYUHEcjKbjLjyddGWMrNEvZg=="
+    crossorigin="anonymous"
+  ></script>
+  <script src="/main.js"></script>
 </html>
