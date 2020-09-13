@@ -34,6 +34,7 @@ function getCohort(isOdd) {
  * @param {int} day
  */
 function getAorB(day) {
+  day = day > 6 ? day - 7 : day
   if (day == 1 || day == 2) {
     return 'A'
   }
@@ -43,24 +44,68 @@ function getAorB(day) {
   return ''
 }
 
+function assignCohort(day, day_diff, obj) {
+  // Assign default data.
+  obj.cohort = getCohort()
+  day = day > 6 ? day - 7 : day
+
+  switch (day) {
+    // Mon/Weds
+    case 1:
+    case 3:
+      // do nothing?
+      break
+
+    // Tues/Thurs
+    case 2:
+    case 4:
+      obj.cohort = getCohort(true)
+      break
+
+    // Friday
+    case 5:
+      // Calculate Friday Cohort
+      weeks_since = day_diff / 7
+      if (weeks_since % 2 === 1) {
+        obj.cohort = getCohort(true)
+      }
+      break
+
+    // Weekend
+    case 0:
+    case 6:
+      obj.cohort = ''
+      obj.letter = ''
+      obj.text = "It's the weekend!"
+      break
+  }
+}
+
 /**
  * Render text on page.
  * @param {object} textObj
  */
-function render(textObj) {
-  console.log(textObj)
+function render(today, tomorrow) {
   var block = $('#block-day')
-  $('#current-date .date', block).html(textObj.today)
-  if (textObj.hasOwnProperty('letter')) {
-    $('#letter h1', block).html(textObj.letter)
-    $(document.body).addClass(textObj.letter)
+  $('#current-date .date', block).html(today.today)
+  if (today.hasOwnProperty('letter')) {
+    $('#letter h1', block).html(today.letter)
+    $(document.body).addClass(today.letter)
   }
-  if (textObj.hasOwnProperty('cohort') && textObj.cohort[1] !== undefined) {
-    $('#cohort-1 h3', block).html('Cohort 1: ' + textObj.cohort[1])
-    $('#cohort-2 h3', block).html('Cohort 2: ' + textObj.cohort[2])
+  if (today.hasOwnProperty('cohort') && today.cohort[1] !== undefined) {
+    $('#cohort-1 h3', block).html('Cohort 1: ' + today.cohort[1])
+    $('#cohort-2 h3', block).html('Cohort 2: ' + today.cohort[2])
   }
-  if (textObj.hasOwnProperty('text')) {
-    $('#text p', block).html(textObj.text)
+  if (today.hasOwnProperty('text')) {
+    $('#text p', block).html(today.text)
+  }
+
+  // Tomorrow
+  prefix = '<strong>Tomorrow is ' + tomorrow.today + '</strong><br>'
+  if (tomorrow.cohort === '') {
+    $('#tomorrow').html(prefix + tomorrow.text)
+  } else {
+    $('#tomorrow').html(prefix + 'Cohort 1: ' + tomorrow.cohort[1] + ', Cohort 2: ' + tomorrow.cohort[2])
   }
 }
 
@@ -69,14 +114,20 @@ var disdCalendar = 'https://www.dentonisd.org/Page/2'
 var today = moment()
 // DEBUG (fake date)
 // today = moment([2020, 09, 15])
-var day = Math.abs(today.format('d'))
+
+var tomorrow = moment(today).add(1, 'd')
+var day = today.day()
 var holidays = getHolidays()
-var renderText = {
+var todayText = {
   today: today.format('dddd, MMMM Do YYYY'),
   letter: getAorB(day),
   cohort: '',
   text: '',
 }
+var tomorrowText = Object.assign({}, todayText, {
+  today: tomorrow.format('dddd, MMMM Do YYYY'),
+  letter: getAorB(day + 1),
+})
 
 // THIS SHOULD NEVER CHANGE (except for each new semester)
 var cohortGenesis = moment([2020, 09, 11])
@@ -84,47 +135,21 @@ var cohortGenesis = moment([2020, 09, 11])
 
 // To calculate the no. of days between two dates
 var day_diff = today.diff(cohortGenesis, 'days')
-console.log(day_diff)
 
-// Switch on Days
-renderText.cohort = getCohort()
-switch (day) {
-  // Mon/Weds
-  case 1:
-  case 3:
-    // do nothing?
-    break
-
-  // Tues/Thurs
-  case 2:
-  case 4:
-    renderText.cohort = getCohort(true)
-    break
-
-  // Friday
-  case 5:
-    // Calculate Friday Cohort
-    weeks_since = day_diff / 7
-    if (weeks_since % 2 === 1) {
-      renderText.cohort = getCohort(true)
-    }
-
-    break
-
-  // Weekend
-  case 0:
-  case 6:
-    renderText.cohort = ''
-    renderText.letter = ''
-    renderText.text = "It's the weekend!"
-    break
-}
+// Get cohort information
+assignCohort(day, day_diff, todayText)
+assignCohort(day + 1, day_diff, tomorrowText)
 
 // Check Holiday
 if (holidays.hasOwnProperty(today.format('L'))) {
   // Holiday exists.
-  renderText = { text: holidays(today.format('L')) }
+  todayText = { text: holidays(today.format('L')) }
+}
+if (holidays.hasOwnProperty(tomorrow.format('L'))) {
+  // Holiday exists.
+  tomorrowText = { text: holidays(tomorrow.format('L')) }
 }
 
 // Render data
-render(renderText)
+console.log({ todayText, tomorrowText })
+render(todayText, tomorrowText)

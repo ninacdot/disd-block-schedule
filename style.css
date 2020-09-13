@@ -3,6 +3,10 @@ body.B {
   color: white;
 }
 
+body.B hr {
+  background-color: white;
+}
+
 #main {
   height: 100vh;
   display: flex;
@@ -15,9 +19,5 @@ body.B {
 }
 
 #letter h1 {
-  font-size: 20rem;
-}
-
-#cohort h3 {
-  font-size: 5rem;
+  font-size: 12rem;
 }
