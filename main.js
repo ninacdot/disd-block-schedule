@@ -41,7 +41,7 @@ function getAorB(day) {
   if (day == 3 || day == 4) {
     return 'B'
   }
-  return ''
+  return 'None'
 }
 
 function assignCohort(day, day_diff, obj) {
@@ -101,11 +101,19 @@ function render(today, tomorrow) {
   }
 
   // Tomorrow
-  prefix = '<strong>Tomorrow is ' + tomorrow.today + '</strong><br>'
+  prefix = '<strong>Tomorrow is</strong> ' + tomorrow.today + '<br>'
   if (tomorrow.cohort === '') {
     $('#tomorrow').html(prefix + tomorrow.text)
   } else {
-    $('#tomorrow').html(prefix + 'Cohort 1: ' + tomorrow.cohort[1] + ', Cohort 2: ' + tomorrow.cohort[2])
+    $('#tomorrow').html(
+      prefix +
+        '<strong>Block: </strong>' +
+        tomorrow.letter +
+        '<br><strong>Cohort</strong> 1: ' +
+        tomorrow.cohort[1] +
+        '<br><strong>Cohort</strong> 2: ' +
+        tomorrow.cohort[2]
+    )
   }
 }
 
@@ -113,7 +121,7 @@ function render(today, tomorrow) {
 var disdCalendar = 'https://www.dentonisd.org/Page/2'
 var today = moment()
 // DEBUG (fake date)
-// today = moment([2020, 09, 15])
+// today = moment([2020, 08, 17])
 
 var tomorrow = moment(today).add(1, 'd')
 var day = today.day()
